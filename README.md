@@ -12,3 +12,6 @@ CREATE TABLE graph_edges (
     to_node NUMBER REFERENCES graph_nodes(node_id),
     weight NUMBER
 );
+# CREATE SEQUENCE
+CREATE SEQUENCE node_seq START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE edge_seq START WITH 1 INCREMENT BY 1;
