@@ -120,4 +120,26 @@ PROCEDURE shortest_path(p_start NUMBER) IS
         END LOOP;
 
     END;
-    #
+ # CYCLE DETECTION LOGIC
+ PROCEDURE detect_cycle IS
+        v_count NUMBER;
+    BEGIN
+        SELECT COUNT(*) INTO v_count
+        FROM graph_edges e1
+        WHERE EXISTS (
+            SELECT 1
+            FROM graph_edges e2
+            WHERE e1.from_node = e2.to_node
+            AND e1.to_node = e2.from_node
+        );
+
+        IF v_count > 0 THEN
+            DBMS_OUTPUT.PUT_LINE('Cycle detected in graph.');
+        ELSE
+            DBMS_OUTPUT.PUT_LINE('No simple cycle detected.');
+        END IF;
+    END;
+
+END graph_engine;
+/
+#
