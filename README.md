@@ -62,4 +62,62 @@ CREATE OR REPLACE PACKAGE BODY graph_engine AS
                                  ' Weight: ' || rec.weight);
         END LOOP;
     END;
-#
+# ALGORITHM
+PROCEDURE shortest_path(p_start NUMBER) IS
+        v_dist dist_table;
+        v_visited node_table;
+        v_current NUMBER;
+        v_min NUMBER;
+        v_total_nodes NUMBER;
+    BEGIN
+
+        SELECT COUNT(*) INTO v_total_nodes FROM graph_nodes;
+
+        -- Initialize
+        FOR i IN 1..v_total_nodes LOOP
+            v_dist(i) := 999999;
+            v_visited(i) := 0;
+        END LOOP;
+
+        v_dist(p_start) := 0;
+
+        FOR i IN 1..v_total_nodes LOOP
+
+            v_min := 999999;
+
+            FOR j IN 1..v_total_nodes LOOP
+                IF v_visited(j) = 0 AND v_dist(j) < v_min THEN
+                    v_min := v_dist(j);
+                    v_current := j;
+                END IF;
+            END LOOP;
+
+            v_visited(v_current) := 1;
+
+            FOR edge_rec IN (
+                SELECT to_node, weight 
+                FROM graph_edges 
+                WHERE from_node = v_current
+            ) LOOP
+
+                IF v_dist(edge_rec.to_node) >
+                   v_dist(v_current) + edge_rec.weight THEN
+
+                   v_dist(edge_rec.to_node) :=
+                   v_dist(v_current) + edge_rec.weight;
+
+                END IF;
+
+            END LOOP;
+
+        END LOOP;
+
+        DBMS_OUTPUT.PUT_LINE('--- SHORTEST DISTANCES ---');
+
+        FOR i IN 1..v_total_nodes LOOP
+            DBMS_OUTPUT.PUT_LINE('Node ' || i ||
+                                 ' Distance: ' || v_dist(i));
+        END LOOP;
+
+    END;
+    #
