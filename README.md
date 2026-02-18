@@ -30,4 +30,36 @@ CREATE OR REPLACE PACKAGE graph_engine AS
 
 END graph_engine;
 /
-# 
+# PACKAGE BODY
+CREATE OR REPLACE PACKAGE BODY graph_engine AS
+
+    -- Add Node
+    PROCEDURE add_node(p_name VARCHAR2) IS
+    BEGIN
+        INSERT INTO graph_nodes VALUES (node_seq.NEXTVAL, p_name);
+    END;
+
+    -- Add Edge
+    PROCEDURE add_edge(p_from NUMBER, p_to NUMBER, p_weight NUMBER) IS
+    BEGIN
+        INSERT INTO graph_edges 
+        VALUES (edge_seq.NEXTVAL, p_from, p_to, p_weight);
+    END;
+
+    -- Display Graph
+    PROCEDURE display_graph IS
+    BEGIN
+        DBMS_OUTPUT.PUT_LINE('--- GRAPH NODES ---');
+        FOR rec IN (SELECT * FROM graph_nodes) LOOP
+            DBMS_OUTPUT.PUT_LINE('Node ID: ' || rec.node_id ||
+                                 ' Name: ' || rec.node_name);
+        END LOOP;
+
+        DBMS_OUTPUT.PUT_LINE('--- GRAPH EDGES ---');
+        FOR rec IN (SELECT * FROM graph_edges) LOOP
+            DBMS_OUTPUT.PUT_LINE('Edge: ' || rec.from_node ||
+                                 ' -> ' || rec.to_node ||
+                                 ' Weight: ' || rec.weight);
+        END LOOP;
+    END;
+#
