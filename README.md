@@ -142,4 +142,23 @@ PROCEDURE shortest_path(p_start NUMBER) IS
 
 END graph_engine;
 /
-#
+# Test Block
+BEGIN
+    graph_engine.add_node('A');
+    graph_engine.add_node('B');
+    graph_engine.add_node('C');
+    graph_engine.add_node('D');
+
+    graph_engine.add_edge(1,2,5);
+    graph_engine.add_edge(2,3,3);
+    graph_engine.add_edge(3,4,2);
+    graph_engine.add_edge(4,2,1);
+
+    graph_engine.display_graph;
+
+    graph_engine.shortest_path(1);
+
+    graph_engine.detect_cycle;
+END;
+/
+# OUTPUT
